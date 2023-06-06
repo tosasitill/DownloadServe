@@ -10,13 +10,13 @@ on:
 
 
 jobs:
-  YIJIANTIQU:
+  Download:
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
         uses: actions/checkout@v2
 
-      - name: 提取镜像并上传至 TMP
+      - name: 提取镜像
         run: |
           cd ~
           aria2c -s 10 -x 10 -d . -o firmware.zip "${{ github.event.inputs.rom_url }}"
