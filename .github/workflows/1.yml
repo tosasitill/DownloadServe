@@ -1,10 +1,10 @@
-name: 提取 boot / init_boot.img
+name: 离线下载
 
 on:
   workflow_dispatch:
     inputs:
       rom_url:
-        description: 'ROM 下载直链'
+        description: 'SourceForge 下载直链'
         required: true
         default: 'https://mirrorbits.lineageos.org/full/tissot/20230425/lineage-19.1-20230425-nightly-tissot-signed.zip'
 
@@ -20,12 +20,14 @@ jobs:
         run: |
           cd ~
           aria2c -s 10 -x 10 -d . -o firmware.zip "${{ github.event.inputs.rom_url }}"
+          cd ${{ github.workspace }}
           touch info.md
+          echo "ROM 下载直链：${{ github.event.inputs.rom_url }}" >> info.md
           
       - name: 上传镜像及相关信息
         uses: ncipollo/release-action@v1.12.0
         with:
             artifacts: "~/firmware.zip"
-            bodyfile: "~/info.md"
+            bodyfile: "${{ github.workspace }}/info.md"
             tag: "OUTPUT_${{ env.BUILD_TIME }}_${{ github.run_id }}"
             token: ${{ secrets.GITHUB_TOKEN }}
