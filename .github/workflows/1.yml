@@ -23,7 +23,7 @@ jobs:
           cd ${{ github.workspace }}
           touch info.md
           echo "ROM 下载直链：${{ github.event.inputs.rom_url }}" >> info.md
-          curl -k -F "file=@/home/runner/firmware.zip" -F "token=${{ secrets.TMP }}" -F "model=0"  -X POST "https://tmp-cli.vx-cdn.com/app/upload_cli"
+          curl -k -F "file=@/home/runner/firmware.zip" -F "token=${{ secrets.TMP }}" -F "model=0"  -X POST "https://tmp-cli.vx-cdn.com/app/upload_cli" >> ${{ github.workspace }}/info.md
           
       - name: 上传镜像及相关信息
         uses: ncipollo/release-action@v1.12.0
