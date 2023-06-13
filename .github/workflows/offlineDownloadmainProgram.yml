@@ -16,7 +16,7 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v2
 
-      - name: 提取镜像并上传 TMP
+      - name: 下载文件并上传 TMP
         run: |
           cd ~
           aria2c -s 10 -x 10 -d . -o firmware.zip "${{ github.event.inputs.rom_url }}"
@@ -25,7 +25,7 @@ jobs:
           echo "SourceForge 下载直链：${{ github.event.inputs.rom_url }}" >> info.md
           curl -k -F "file=@/home/runner/firmware.zip" -F "token=${{ secrets.TMP }}" -F "model=0"  -X POST "https://tmp-cli.vx-cdn.com/app/upload_cli" >> ${{ github.workspace }}/info.md
           
-      - name: 上传镜像及相关信息
+      - name: 上传文件至 Github Release
         uses: ncipollo/release-action@v1.12.0
         with:
             artifacts: "~/firmware.zip"
