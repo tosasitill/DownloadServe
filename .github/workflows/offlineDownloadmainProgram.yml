@@ -18,13 +18,14 @@ jobs:
 
       - name: 下载文件并上传 TMP
         run: |
+          curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "离线下载进度通知", "content": [[{"tag": "text", "text": "新下载任务已被创建: "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}"}]]}}}}' ${{ secrets.FEISHU }}
           cd ~
           aria2c -s 10 -x 10 -d . -o firmware.zip "${{ github.event.inputs.rom_url }}"
           cd ${{ github.workspace }}
           touch info.md
           echo "SourceForge 下载直链：${{ github.event.inputs.rom_url }}" >> info.md
           curl -k -F "file=@/home/runner/firmware.zip" -F "token=${{ secrets.TMP }}" -F "model=0"  -X POST "https://tmp-cli.vx-cdn.com/app/upload_cli" >> ${{ github.workspace }}/info.md
-          
+          curl -X POST -H "Content-Type: application/json" -d '{"msg_type": "post", "content": {"post": {"zh_cn": {"title": "离线下载进度通知", "content": [[{"tag": "text", "text": "新下载任务已完成: "}, {"tag": "text", "text": "下载直链：${{ github.event.inputs.rom_url }}                             |                 "},{"tag": "a", "text": "点我跳转下载链接", "href": "https://github.com/tosasitill/DownloadServe/releases/"}]]}}}}' ${{ secrets.FEISHU }}
       - name: 上传文件至 Github Release
         uses: ncipollo/release-action@v1.12.0
         with:
